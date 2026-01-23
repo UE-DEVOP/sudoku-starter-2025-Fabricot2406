@@ -2,6 +2,8 @@
 
 Sudoku game
 
+YABAR Fabio
+
 ## Getting Started
 
 1. Make sure Flutter is installed

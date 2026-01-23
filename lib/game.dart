@@ -65,13 +65,20 @@ class _GameState extends State<Game> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            SizedBox(
+              height: boxSize * 3,
+              width: boxSize * 3,
+              child: GridView.count(
+                crossAxisCount: 3,
+                children: List.generate(9, (x) {
+                  return Container(
+                    width: boxSize,
+                    height: boxSize,
+                    decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+                  );
+                }),
+              )
+            )
           ],
         ),
       ),
