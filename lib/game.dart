@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:sudoku_api/sudoku_api.dart';
 import 'package:sudoku_starter/internalGrid.dart';
+import 'package:sudoku_starter/sudokuService.dart';
 
 class Game extends StatefulWidget {
   const Game({Key? key, required this.title}) : super(key: key);
@@ -20,16 +24,20 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
-  int _counter = 0;
+  final SudokuService sudokuService = SudokuService();
 
-  void _incrementCounter() {
+  List<List<int>>? grid;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadGrid();
+  }
+
+  Future<void> _loadGrid() async {
+    final generatedGrid = await sudokuService.generateGrid();
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      grid = generatedGrid;
     });
   }
 
@@ -40,6 +48,11 @@ class _GameState extends State<Game> {
     var maxSize = height > width ? width : height;
     var boxSize = (maxSize / 3).ceil().toDouble();
 
+    if (grid == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -76,7 +89,7 @@ class _GameState extends State<Game> {
                     width: boxSize,
                     height: boxSize,
                     decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-                    child: InternalGrid(boxSize: boxSize),
+                    child: InternalGrid(boxSize: boxSize, values: grid![x],)
                   );
                 }),
               )
@@ -84,10 +97,10 @@ class _GameState extends State<Game> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+      floatingActionButton: const FloatingActionButton(
+        onPressed: null,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
