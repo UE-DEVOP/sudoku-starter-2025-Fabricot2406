@@ -1,39 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:sudoku_api/sudoku_api.dart';
+import 'package:sudoku_starter/box.dart';
 
 class InternalGrid extends StatelessWidget {
-  const InternalGrid({Key? key, required this.boxSize, required this.values}) : super(key: key);
+  const InternalGrid({
+    Key? key,
+    required this.boxSize,
+    required this.puzzle,
+    required this.blockIndex,
+    required this.selectedIndex,
+    required this.onSelect
+  }) : super(key: key);
 
   final double boxSize;
-  final List<int> values;
+  final Puzzle puzzle;
+  final int blockIndex;
+  final int? selectedIndex;
+  final Function(int) onSelect;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-          child: SizedBox(
+    final matrix = puzzle.board()!.matrix()!;
+    return SizedBox(
               height: boxSize,
               width: boxSize,
               child: GridView.count(
                 crossAxisCount: 3,
                 children: List.generate(9, (x) {
-                  return Container(
-                    width: 0.3,
-                    height: 0.3,
-                    decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-                    child: Center(
-                      child: Text(
-                        values[x] == 0 ? '' : values[x].toString(),
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  final index = blockIndex * 9 + x;
+                  return Box(
+                    value: matrix[blockIndex][x].getValue() ?? 0,
+                    isSelected: selectedIndex == index,
+                    onTap: () => onSelect(index),
                   );
                 }),
               )
-          )
-      ),
-    );
+          );
   }
 }

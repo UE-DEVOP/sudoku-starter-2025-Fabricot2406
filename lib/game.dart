@@ -26,18 +26,19 @@ class Game extends StatefulWidget {
 class _GameState extends State<Game> {
   final SudokuService sudokuService = SudokuService();
 
-  List<List<int>>? grid;
+  Puzzle? puzzle;
+  int? selectedIndex;
 
   @override
   void initState() {
     super.initState();
-    _loadGrid();
+    _loadPuzzle();
   }
 
-  Future<void> _loadGrid() async {
-    final generatedGrid = await sudokuService.generateGrid();
+  Future<void> _loadPuzzle() async {
+    final generatedPuzzle = await sudokuService.generatePuzzle();
     setState(() {
-      grid = generatedGrid;
+      puzzle = generatedPuzzle;
     });
   }
 
@@ -48,7 +49,7 @@ class _GameState extends State<Game> {
     var maxSize = height > width ? width : height;
     var boxSize = (maxSize / 3).ceil().toDouble();
 
-    if (grid == null) {
+    if (puzzle == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
@@ -89,7 +90,17 @@ class _GameState extends State<Game> {
                     width: boxSize,
                     height: boxSize,
                     decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-                    child: InternalGrid(boxSize: boxSize, values: grid![x],)
+                    child: InternalGrid(
+                      boxSize: boxSize,
+                      puzzle: puzzle!,
+                      blockIndex: x,
+                      selectedIndex: selectedIndex,
+                      onSelect: (int index) {
+                        setState(() {
+                          selectedIndex = index;
+                        });
+                      },
+                    ),
                   );
                 }),
               )
