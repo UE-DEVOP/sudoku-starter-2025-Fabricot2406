@@ -1,5 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sudoku_starter/game.dart';
+
+final GoRouter router = GoRouter(
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const HomePage(),
+      routes: [
+        GoRoute(
+          path: 'game',
+          builder: (context, state) => const Game(title: 'Sudoku'),
+        ),
+        GoRoute(
+          path: 'end',
+          builder: (context, state) => const EndPage(),
+        ),
+      ]
+    )
+  ],
+);
 
 void main() {
   runApp(const MyApp());
@@ -11,7 +31,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -25,7 +45,51 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const Game(title: 'Flutter Demo Home Page'),
+      routerConfig: router,
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Sudoku')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => context.go('/game'),
+          child: const Text('Start a New Game'),
+        ),
+      ),
+    );
+  }
+}
+
+class EndPage extends StatelessWidget {
+  const EndPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Victory')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'You solved it!',
+              style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => context.go('/'),
+              child: const Text('Go to main menu'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

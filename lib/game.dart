@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:sudoku_api/sudoku_api.dart';
 import 'package:sudoku_starter/internalGrid.dart';
 import 'package:sudoku_starter/sudokuService.dart';
@@ -42,6 +43,24 @@ class _GameState extends State<Game> {
       puzzle = generatedPuzzle;
     });
   }
+
+  bool isGridCompleted() {
+    final board = puzzle!.board()!.matrix()!;
+    final solved = puzzle!.solvedBoard()!.matrix()!;
+
+    for (int x = 0; x < 9; x++) {
+      for (int y = 0; y < 9; y++) {
+        final currentValue = board[x][y].getValue();
+        final solvedValue = solved[x][y].getValue();
+
+        if (currentValue == null || currentValue != solvedValue) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -124,6 +143,10 @@ class _GameState extends State<Game> {
                           final pos = Position(row: row, column: col);
                           puzzle!.board()!.cellAt(pos).setValue(value);
                         });
+
+                        if (isGridCompleted()) {
+                          context.go('/end');
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar (
                             const SnackBar(
