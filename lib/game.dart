@@ -104,7 +104,26 @@ class _GameState extends State<Game> {
                   );
                 }),
               )
-            )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(10, (i) {
+                final value = i;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
+                  child: ElevatedButton(
+                    onPressed: selectedIndex == null ? null : () {
+                      setState(() {
+                        final pos = Position(row: selectedIndex! ~/ 9, column: selectedIndex! % 9);
+                        puzzle!.board()!.cellAt(pos).setValue(value);
+                      });
+                    },
+                    child: Text(value == 0 ? "Empty" : value.toString()),
+                  ),
+                );
+              }),
+
+            ),
           ],
         ),
       ),
