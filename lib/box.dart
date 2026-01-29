@@ -5,11 +5,13 @@ class Box extends StatelessWidget {
     Key? key,
     required this.value,
     required this.isSelected,
+    required this.isCorrectSolution,
     required this.onTap,
   }) : super(key: key);
 
-  final int value;
+  final int? value;
   final bool isSelected;
+  final bool isCorrectSolution;
   final VoidCallback onTap;
 
   @override
@@ -28,9 +30,10 @@ class Box extends StatelessWidget {
           child: Center(
             child: Text(
               value == 0 ? '' : value.toString(),
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: isCorrectSolution ? Colors.black12 : Colors.black,
               ),
             ),
           ),

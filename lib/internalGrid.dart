@@ -28,9 +28,15 @@ class InternalGrid extends StatelessWidget {
                 crossAxisCount: 3,
                 children: List.generate(9, (x) {
                   final index = blockIndex * 9 + x;
+                  final currentValue = matrix[blockIndex][x].getValue();
+                  final solvedValue = puzzle.solvedBoard()?.matrix()?[blockIndex][x].getValue();
+
+                  debugPrint(currentValue.toString() + solvedValue.toString());
+
                   return Box(
-                    value: matrix[blockIndex][x].getValue() ?? 0,
+                    value: currentValue != 0 ? currentValue : solvedValue,
                     isSelected: selectedIndex == index,
+                    isCorrectSolution: currentValue == 0,
                     onTap: () => onSelect(index),
                   );
                 }),
