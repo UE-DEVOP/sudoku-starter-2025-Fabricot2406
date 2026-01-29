@@ -171,16 +171,32 @@ class _GameState extends State<Game> {
                   ),
                 );
               }),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final board = puzzle!.board()!;
+                final solution = puzzle!.solvedBoard()!.matrix()!;
 
+                for (int row = 0; row < 9; row++) {
+                  for (int col = 0; col < 9; col++) {
+                    final cell = board.cellAt(Position(row: row, column: col));
+                    if (cell.getValue() == 0) {
+                      await Future.delayed(const Duration(milliseconds: 20));
+
+                      setState(() {
+                        cell.setValue(solution[row][col].getValue() ?? 0);
+                      });
+                    }
+                  }
+                }
+
+                context.go('/end');
+              },
+              child: const Text('Solve the Grid'),
             ),
           ],
         ),
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
