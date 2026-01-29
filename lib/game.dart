@@ -142,12 +142,17 @@ class _GameState extends State<Game> {
                         setState(() {
                           final pos = Position(row: row, column: col);
                           puzzle!.board()!.cellAt(pos).setValue(value);
+                          selectedIndex = null;
                         });
 
                         if (isGridCompleted()) {
                           context.go('/end');
                         }
                       } else {
+                        setState(() {
+                          selectedIndex = null;
+                        });
+
                         ScaffoldMessenger.of(context).showSnackBar (
                             const SnackBar(
                               elevation: 0,
