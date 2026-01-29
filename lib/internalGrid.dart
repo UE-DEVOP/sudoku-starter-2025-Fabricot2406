@@ -37,7 +37,7 @@ class InternalGrid extends StatelessWidget {
                     value: currentValue != 0 ? currentValue : solvedValue,
                     isSelected: selectedIndex == index,
                     isCorrectSolution: currentValue == 0,
-                    onTap: () => onSelect(index),
+                    onTap: currentValue != 0 ? null : () => onSelect(index),
                   );
                 }),
               )

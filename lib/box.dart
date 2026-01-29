@@ -12,7 +12,7 @@ class Box extends StatelessWidget {
   final int? value;
   final bool isSelected;
   final bool isCorrectSolution;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
