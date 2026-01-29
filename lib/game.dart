@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:sudoku_api/sudoku_api.dart';
 import 'package:sudoku_starter/internalGrid.dart';
@@ -113,10 +114,30 @@ class _GameState extends State<Game> {
                   padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
                   child: ElevatedButton(
                     onPressed: selectedIndex == null ? null : () {
-                      setState(() {
-                        final pos = Position(row: selectedIndex! ~/ 9, column: selectedIndex! % 9);
-                        puzzle!.board()!.cellAt(pos).setValue(value);
-                      });
+                      final row = selectedIndex! ~/ 9;
+                      final col = selectedIndex! % 9;
+
+                      final expectedValue = puzzle!.solvedBoard()?.matrix()?[row][col].getValue();
+
+                      if (expectedValue == value || value == 0) {
+                        setState(() {
+                          final pos = Position(row: row, column: col);
+                          puzzle!.board()!.cellAt(pos).setValue(value);
+                        });
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar (
+                            const SnackBar(
+                              elevation: 0,
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              content: AwesomeSnackbarContent(
+                                title: 'Wrong value',
+                                message: 'Please try another one!',
+                                contentType: ContentType.failure,
+                              ),
+                            ),
+                        );
+                      }
                     },
                     child: Text(value == 0 ? "Empty" : value.toString()),
                   ),
