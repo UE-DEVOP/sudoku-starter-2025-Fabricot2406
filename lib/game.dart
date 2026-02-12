@@ -1,4 +1,4 @@
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +31,35 @@ class _GameState extends State<Game> {
   Puzzle? puzzle;
   int? selectedIndex;
 
+  // Source for the Stopwatch - https://stackoverflow.com/a/77882280
+  // Posted by Mehran Ullah
+  // Retrieved 2026-02-12, License - CC BY-SA 4.0
+  final Stopwatch _stopwatch = Stopwatch();
+  late Duration _elapsedTime;
+  late String _elapsedTimeString;
+  late Timer timer;
+
   @override
   void initState() {
     super.initState();
     _loadPuzzle();
+    _stopwatch.start();
+    _elapsedTime = Duration.zero;
+    _elapsedTimeString = _formatElapsedTime(_elapsedTime);
+    timer = Timer.periodic(const Duration(milliseconds: 100), (Timer timer) {
+      setState(() {
+        // Update elapsed time only if the stopwatch is running
+        if (_stopwatch.isRunning) {
+          _updateElapsedTime();
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   Future<void> _loadPuzzle() async {
@@ -42,6 +67,17 @@ class _GameState extends State<Game> {
     setState(() {
       puzzle = generatedPuzzle;
     });
+  }
+
+  void _updateElapsedTime() {
+    setState(() {
+      _elapsedTime = _stopwatch.elapsed;
+      _elapsedTimeString = _formatElapsedTime(_elapsedTime);
+    });
+  }
+
+  String _formatElapsedTime(Duration time) {
+    return '${time.inMinutes.remainder(60).toString().padLeft(2, '0')}:${(time.inSeconds.remainder(60)).toString().padLeft(2, '0')}.${(time.inMilliseconds % 1000 ~/ 100).toString()}';
   }
 
   bool isGridCompleted() {
@@ -100,9 +136,13 @@ class _GameState extends State<Game> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(
+              _elapsedTimeString,
+              style: const TextStyle(fontSize: 20.0),
+            ),
             SizedBox(
-              height: boxSize * 3,
-              width: boxSize * 3,
+              height: boxSize * 3 - 20,
+              width: boxSize * 3 - 20,
               child: GridView.count(
                 crossAxisCount: 3,
                 children: List.generate(9, (x) {
@@ -125,6 +165,7 @@ class _GameState extends State<Game> {
                 }),
               )
             ),
+            const SizedBox(height: 20),
             const SizedBox(height: 20),
             Center(
               child: SizedBox(
