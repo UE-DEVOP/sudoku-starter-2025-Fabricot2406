@@ -125,35 +125,43 @@ class _GameState extends State<Game> {
                 }),
               )
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(10, (i) {
-                final value = i;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 20),
-                  child: ElevatedButton(
-                    onPressed: selectedIndex == null ? null : () {
-                      final row = selectedIndex! ~/ 9;
-                      final col = selectedIndex! % 9;
+            const SizedBox(height: 20),
+            Center(
+              child: SizedBox(
+                width: 200,
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: List.generate(9, (i) {
+                    final value = i + 1;
 
-                      final expectedValue = puzzle!.solvedBoard()?.matrix()?[row][col].getValue();
+                    return ElevatedButton(
+                      onPressed: selectedIndex == null ? null : () {
+                        final row = selectedIndex! ~/ 9;
+                        final col = selectedIndex! % 9;
 
-                      if (expectedValue == value || value == 0) {
-                        setState(() {
-                          final pos = Position(row: row, column: col);
-                          puzzle!.board()!.cellAt(pos).setValue(value);
-                          selectedIndex = null;
-                        });
+                        final expectedValue =
+                        puzzle!.solvedBoard()?.matrix()?[row][col].getValue();
 
-                        if (isGridCompleted()) {
-                          context.go('/end');
-                        }
-                      } else {
-                        setState(() {
-                          selectedIndex = null;
-                        });
+                        if (expectedValue == value || value == 0) {
+                          setState(() {
+                            final pos = Position(row: row, column: col);
+                            puzzle!.board()!.cellAt(pos).setValue(value);
+                            selectedIndex = null;
+                          });
 
-                        ScaffoldMessenger.of(context).showSnackBar (
+                          if (isGridCompleted()) {
+                            context.go('/end');
+                          }
+                        } else {
+                          setState(() {
+                            selectedIndex = null;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               elevation: 0,
                               behavior: SnackBarBehavior.floating,
@@ -164,14 +172,19 @@ class _GameState extends State<Game> {
                                 contentType: ContentType.failure,
                               ),
                             ),
-                        );
-                      }
-                    },
-                    child: Text(value == 0 ? "Empty" : value.toString()),
-                  ),
-                );
-              }),
+                          );
+                        }
+                      },
+                      child: Text(
+                        value.toString(),
+                        style: const TextStyle(fontSize: 20),
+                      ),
+                    );
+                  }),
+                ),
+              ),
             ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
                 final board = puzzle!.board()!;
