@@ -39,6 +39,8 @@ class _GameState extends State<Game> {
   late String _elapsedTimeString;
   late Timer timer;
 
+  int mistakes = 0;
+
   @override
   void initState() {
     super.initState();
@@ -136,9 +138,21 @@ class _GameState extends State<Game> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              _elapsedTimeString,
-              style: const TextStyle(fontSize: 20.0),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    _elapsedTimeString,
+                    style: const TextStyle(fontSize: 20.0),
+                  ),
+                  const SizedBox(width: 40),
+                  Text(
+                    "Errors: $mistakes/3",
+                    style: const TextStyle(fontSize: 20.0),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: boxSize * 3 - 20,
@@ -200,6 +214,9 @@ class _GameState extends State<Game> {
                         } else {
                           setState(() {
                             selectedIndex = null;
+                            mistakes += 1;
+
+                            if (mistakes == 3) context.go('/end');
                           });
 
                           ScaffoldMessenger.of(context).showSnackBar(
