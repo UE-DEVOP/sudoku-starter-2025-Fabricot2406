@@ -17,6 +17,10 @@ final GoRouter router = GoRouter(
           path: 'end',
           builder: (context, state) => const EndPage(),
         ),
+        GoRoute(
+          path: 'defeat',
+          builder: (context, state) => const DefeatPage(),
+        )
       ]
     )
   ],
@@ -122,6 +126,33 @@ class _EndPageState extends State<EndPage> {
                   child: const Text('Go to main menu'),
                 ),
               ],
+            ),
+          ],
+        )
+      ),
+    );
+  }
+}
+
+
+class DefeatPage extends StatelessWidget {
+  const DefeatPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Defeat')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'You lost lmao!',
+              style: TextStyle(fontSize: 20),
+            ),
+            ElevatedButton(
+              onPressed: () => context.go('/game'),
+              child: const Text('Start a New Game'),
             ),
           ],
         )

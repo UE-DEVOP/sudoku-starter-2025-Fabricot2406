@@ -216,7 +216,7 @@ class _GameState extends State<Game> {
                             selectedIndex = null;
                             mistakes += 1;
 
-                            if (mistakes == 3) context.go('/end');
+                            if (mistakes == 3) context.go('/defeat');
                           });
 
                           ScaffoldMessenger.of(context).showSnackBar(
